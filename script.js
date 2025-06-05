@@ -1,239 +1,294 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // --- Application State ---
-    let currentPrayer = null; // e.g., 'shacharit'
-    let personalNusach = null;
-    let communityNusach = null;
-    let prayerDataCache = {}; // To cache loaded JSON files (templates and nusachim)
+// script.js
+(function() {
+    'use strict';
 
-    // --- Configuration ---
-    const supportedNusachim = [
-        { id: 'ashkenaz', name: 'Ashkenaz' },
-        { id: 'sefard', name: 'Sefard' },
-        { id: 'edot_hamizrach', name: 'Edot HaMizrach (Sefaradi)' }
-        // Add more Nusachim here
+    // 0. Configuration / Constants
+    const PRAYERS = [
+        { id: 'shacharit', name: 'Shacharit (שחרית)', templateFile: 'shacharit_template.json' },
+        { id: 'mincha', name: 'Mincha (מנחה)', templateFile: 'mincha_template.json' },
+        { id: 'maariv', name: 'Maariv (מעריב)', templateFile: 'maariv_template.json' },
+        // Example: { id: 'psukei_dezimra', name: 'Psukei D\'Zimra (פסוקי דזמרה)', templateFile: 'psukei_dezimra_template.json' },
     ];
 
-    const prayerTemplates = {
-        'shacharit': 'data/templates/shacharit_template.json',
-        'mincha': 'data/templates/mincha_template.json',
-        'maariv': 'data/templates/maariv_template.json'
-        // Add more prayers here
-    };
+    const NUSACHIM = [
+        { id: 'ashkenaz', name: 'Ashkenaz (אשכנז)', dataFile: 'ashkenaz.json' },
+        { id: 'sephard', name: 'Sephard (ספרד)', dataFile: 'sephard.json' },
+        { id: 'edot_hamizrach', name: 'Edot HaMizrach (עדות המזרח)', dataFile: 'edot_hamizrach.json' },
+        // Example: { id: 'ari', name: 'Ari (אר"י)', dataFile: 'ari.json' },
+    ];
 
-    // --- UI Element References ---
-    const views = {
-        mainMenu: document.getElementById('main-menu-view'),
-        nusachSelection: document.getElementById('nusach-selection-view'),
-        prayerDisplay: document.getElementById('prayer-display-view')
-    };
-    const prayerSelectionMenu = document.getElementById('prayer-selection-menu');
+    const DATA_PATH_TEMPLATES = 'data/templates/';
+    const DATA_PATH_NUSACHIM = 'data/nusachim/';
+
+    // 1. DOM Element References
+    const mainMenuNav = document.getElementById('main-menu-view');
+    const nusachSelectionNav = document.getElementById('nusach-selection-view');
+    const prayerDisplayNav = document.getElementById('prayer-display-view');
+
+    const prayerListUl = document.getElementById('prayer-list');
     const personalNusachSelect = document.getElementById('personal-nusach-select');
     const communityNusachSelect = document.getElementById('community-nusach-select');
-    const startPrayerButton = document.getElementById('start-prayer-button');
+    const startPrayerBtn = document.getElementById('start-prayer-btn');
     const prayerContentArea = document.getElementById('prayer-content-area');
-    const currentPrayerTitle = document.getElementById('current-prayer-title');
-    const backToMenuButtons = document.querySelectorAll('.back-to-menu-button');
+    const backToMenuBtn = document.getElementById('back-to-menu-btn');
+    const selectedPrayerTitle = document.getElementById('selected-prayer-title');
+    const prayerViewTitle = document.getElementById('prayer-view-title');
 
 
-    // --- Initialization ---
-    function init() {
-        populateNusachDropdowns();
-        setupEventListeners();
-        navigateTo('mainMenu'); // Start at the main menu
+    // 2. State Variables
+    let currentView = 'main-menu'; // 'main-menu', 'nusach-selection', 'prayer-display'
+    let selectedPrayerId = null;
+    let selectedPersonalNusachId = null;
+    let selectedCommunityNusachId = null;
+
+    // 3. View Management Functions
+    function showView(viewName) {
+        mainMenuNav.style.display = 'none';
+        nusachSelectionNav.style.display = 'none';
+        prayerDisplayNav.style.display = 'none';
+        backToMenuBtn.style.display = 'none';
+
+        currentView = viewName;
+
+        if (viewName === 'main-menu') {
+            mainMenuNav.style.display = 'block';
+        } else if (viewName === 'nusach-selection') {
+            nusachSelectionNav.style.display = 'block';
+            backToMenuBtn.style.display = 'inline-block'; // or 'block'
+        } else if (viewName === 'prayer-display') {
+            prayerDisplayNav.style.display = 'block';
+            backToMenuBtn.style.display = 'inline-block'; // or 'block'
+        }
+    }
+
+    // 4. Data Fetching Functions
+    async function fetchData(filePath) {
+        try {
+            const response = await fetch(filePath);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status} for ${filePath}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            prayerContentArea.innerHTML = `<p style="color:red;">Error loading data: ${error.message}. Please check console.</p>`;
+            return null; // Or throw error to be caught by caller
+        }
+    }
+
+    // 5. Core Logic / Rendering Functions
+    function populatePrayerList() {
+        prayerListUl.innerHTML = ''; // Clear existing
+        PRAYERS.forEach(prayer => {
+            const li = document.createElement('li');
+            const button = document.createElement('button');
+            button.textContent = prayer.name;
+            button.dataset.prayerId = prayer.id;
+            button.addEventListener('click', handlePrayerSelection);
+            li.appendChild(button);
+            prayerListUl.appendChild(li);
+        });
     }
 
     function populateNusachDropdowns() {
-        supportedNusachim.forEach(nusach => {
-            const optionPersonal = new Option(nusach.name, nusach.id);
-            const optionCommunity = new Option(nusach.name, nusach.id);
-            personalNusachSelect.add(optionPersonal);
-            communityNusachSelect.add(optionCommunity);
-        });
-        // Set default selections if desired
-        if (supportedNusachim.length > 0) {
-            personalNusachSelect.value = supportedNusachim[0].id;
-            communityNusachSelect.value = supportedNusachim[0].id;
-        }
-    }
-
-    // --- Event Listeners Setup ---
-    function setupEventListeners() {
-        // Prayer selection buttons (if dynamically generated, use event delegation on prayerSelectionMenu)
-        document.querySelectorAll('#prayer-selection-menu button').forEach(button => {
-            button.addEventListener('click', (event) => {
-                currentPrayer = event.target.dataset.prayer;
-                navigateTo('nusachSelection');
+        [personalNusachSelect, communityNusachSelect].forEach(selectElement => {
+            selectElement.innerHTML = ''; // Clear existing
+            NUSACHIM.forEach(nusach => {
+                const option = document.createElement('option');
+                option.value = nusach.id;
+                option.textContent = nusach.name;
+                selectElement.appendChild(option);
             });
         });
-
-        startPrayerButton.addEventListener('click', () => {
-            personalNusach = personalNusachSelect.value;
-            communityNusach = communityNusachSelect.value;
-            if (currentPrayer && personalNusach && communityNusach) {
-                displayPrayer();
-                navigateTo('prayerDisplay');
-            } else {
-                alert("Please select a prayer and both Nusachim.");
-            }
-        });
-
-        backToMenuButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                prayerContentArea.innerHTML = ''; // Clear previous prayer
-                currentPrayerTitle.textContent = '';
-                navigateTo('mainMenu');
-            });
-        });
-    }
-
-    // --- Navigation ---
-    function navigateTo(viewName) {
-        Object.values(views).forEach(view => view.classList.remove('active-view'));
-        if (views[viewName]) {
-            views[viewName].classList.add('active-view');
+        // Set default selections if desired, e.g., from localStorage
+        if (NUSACHIM.length > 0) {
+            personalNusachSelect.value = NUSACHIM[0].id;
+            communityNusachSelect.value = NUSACHIM[0].id;
         }
     }
 
-    // --- Data Fetching ---
-    async function fetchData(url) {
-        if (prayerDataCache[url]) {
-            return prayerDataCache[url];
+    async function renderPrayer() {
+        if (!selectedPrayerId || !selectedPersonalNusachId || !selectedCommunityNusachId) {
+            prayerContentArea.innerHTML = '<p>Error: Prayer or Nusach not selected.</p>';
+            return;
         }
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status} for ${url}`);
-            }
-            const data = await response.json();
-            prayerDataCache[url] = data; // Cache the fetched data
-            return data;
-        } catch (error) {
-            console.error("Failed to fetch data:", error);
-            prayerContentArea.innerHTML = `<p class="error">Error loading prayer data: ${error.message}. Please try again later.</p>`;
-            return null; // Or an empty array/object as appropriate
-        }
-    }
 
-    // --- Core Prayer Rendering Logic ---
-    async function displayPrayer() {
-        if (!currentPrayer || !personalNusach || !communityNusach) return;
-
-        currentPrayerTitle.textContent = currentPrayer.charAt(0).toUpperCase() + currentPrayer.slice(1); // Simple title
         prayerContentArea.innerHTML = '<p>Loading prayer...</p>'; // Loading indicator
 
-        const templatePath = prayerTemplates[currentPrayer];
-        const nusachPersonalPath = `data/nusachim/${personalNusach}.json`;
-        const nusachCommunityPath = `data/nusachim/${communityNusach}.json`;
+        const prayerConfig = PRAYERS.find(p => p.id === selectedPrayerId);
+        const personalNusachConfig = NUSACHIM.find(n => n.id === selectedPersonalNusachId);
+        const communityNusachConfig = NUSACHIM.find(n => n.id === selectedCommunityNusachId);
 
-        try {
-            // Fetch all necessary data in parallel
-            const [template, personalTexts, communityTexts] = await Promise.all([
-                fetchData(templatePath),
-                fetchData(nusachPersonalPath),
-                fetchData(nusachCommunityPath)
-            ]);
-
-            if (!template || !personalTexts || !communityTexts) {
-                 prayerContentArea.innerHTML = `<p class="error">Could not load all necessary prayer data. One or more files might be missing or malformed.</p>`;
-                 return;
-            }
-
-            renderPrayerContent(template, personalTexts, communityTexts);
-
-        } catch (error) {
-            console.error("Error processing prayer:", error);
-            prayerContentArea.innerHTML = `<p class="error">An error occurred while preparing the prayer: ${error.message}</p>`;
+        if (!prayerConfig || !personalNusachConfig || !communityNusachConfig) {
+            prayerContentArea.innerHTML = '<p>Error: Invalid configuration.</p>';
+            return;
         }
-    }
 
-    function renderPrayerContent(template, personalTexts, communityTexts) {
-        prayerContentArea.innerHTML = ''; // Clear loading message or previous content
+        const prayerTitle = prayerConfig.name;
+        prayerViewTitle.textContent = prayerTitle;
 
-        template.forEach(unit => {
-            const unitDiv = document.createElement('div');
-            unitDiv.classList.add('prayer-unit');
-            unitDiv.setAttribute('data-unit-id', unit.unit_id); // For debugging or advanced features
+        const [templateData, personalNusachData, communityNusachData] = await Promise.all([
+            fetchData(DATA_PATH_TEMPLATES + prayerConfig.templateFile),
+            fetchData(DATA_PATH_NUSACHIM + personalNusachConfig.dataFile),
+            fetchData(DATA_PATH_NUSACHIM + communityNusachConfig.dataFile)
+        ]);
 
-            // Optional: Display section name (if you want it in the UI)
-            if (unit.section_name) {
-                const sectionHeader = document.createElement('h4');
-                sectionHeader.classList.add('section-name-header');
-                sectionHeader.textContent = unit.section_name;
-                // unitDiv.appendChild(sectionHeader); // Uncomment to display
+        if (!templateData || !personalNusachData || !communityNusachData) {
+            // Error already logged by fetchData, message shown in prayerContentArea
+            return;
+        }
+
+        prayerContentArea.innerHTML = ''; // Clear loading message
+
+        templateData.forEach(unit => {
+            const unitId = unit.unit_id;
+            const displayRule = unit.display_rule;
+            const sectionName = unit.section_name;
+
+            if (sectionName) {
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'section-name-display';
+                sectionDiv.textContent = sectionName;
+                prayerContentArea.appendChild(sectionDiv);
             }
 
-            let textToDisplay = null;
-            let appliedRule = unit.display_rule; // For clarity in debugging if needed
+            const personalUnitText = personalNusachData[unitId];
+            const communityUnitText = communityNusachData[unitId];
+            let textToRender = '';
+            let cssClass = 'hybrid-text'; // Default class
 
-            const pText = personalTexts[unit.unit_id];
-            const cText = communityTexts[unit.unit_id];
-
-            switch (unit.display_rule) {
+            switch (displayRule) {
                 case 'personal':
-                    textToDisplay = pText;
-                    if (textToDisplay) unitDiv.classList.add('personal-text');
+                    textToRender = personalUnitText;
+                    if (personalUnitText && personalUnitText !== communityUnitText) {
+                        cssClass = 'personal-only';
+                    }
                     break;
                 case 'community':
-                    textToDisplay = cText;
-                    if (textToDisplay) unitDiv.classList.add('community-text');
+                    textToRender = communityUnitText;
+                    if (communityUnitText && communityUnitText !== personalUnitText) {
+                        cssClass = 'community-only';
+                    }
                     break;
                 case 'hybrid_default_personal':
-                    if (pText && cText && pText === cText) {
-                        textToDisplay = pText; // Texts are identical
-                        unitDiv.classList.add('personal-text'); // Or a generic 'shared-text' class
-                    } else if (pText && cText && pText !== cText) {
-                        textToDisplay = pText; // Personal text preferred when different
-                        unitDiv.classList.add('personal-text');
-                        // Optionally, indicate that community text is different but not shown,
-                        // or implement a toggle later.
-                    } else if (pText && !cText) {
-                        textToDisplay = pText;
-                        unitDiv.classList.add('personal-only');
-                    } else if (!pText && cText) {
-                        textToDisplay = cText;
-                        unitDiv.classList.add('community-only');
+                    if (personalUnitText) {
+                        textToRender = personalUnitText;
+                        if (personalUnitText !== communityUnitText) {
+                             cssClass = 'personal-only';
+                        } // else it's same, hybrid-text is fine
+                    } else if (communityUnitText) {
+                        textToRender = communityUnitText;
+                        cssClass = 'community-only'; // Fallback to community, distinctly community
                     }
-                    // If neither exists, textToDisplay remains null.
+                    break;
+                case 'hybrid_default_community':
+                    if (communityUnitText) {
+                        textToRender = communityUnitText;
+                        if (communityUnitText !== personalUnitText) {
+                            cssClass = 'community-only';
+                        } // else it's same, hybrid-text is fine
+                    } else if (personalUnitText) {
+                        textToRender = personalUnitText;
+                        cssClass = 'personal-only'; // Fallback to personal, distinctly personal
+                    }
                     break;
                 default:
-                    console.warn(`Unknown display_rule: ${unit.display_rule} for unit_id: ${unit.unit_id}`);
-                    textToDisplay = `Error: Unknown display rule '${unit.display_rule}'.`;
-                    unitDiv.classList.add('error-text');
+                    textToRender = `Unknown rule: ${displayRule}`;
+                    cssClass = 'error-text';
             }
 
-            if (textToDisplay) {
-                // Sanitize text before inserting if it can contain HTML, though for prayer texts it usually won't.
-                // For simplicity, assuming plain text. If HTML is needed, use careful sanitization.
-                const paragraph = document.createElement('p');
-                paragraph.textContent = textToDisplay;
-                unitDiv.appendChild(paragraph);
-            } else {
-                // Handle cases where no text is available based on the rules (e.g., a unit is truly omitted)
-                // unitDiv.innerHTML = `<p class="omitted-text"><i>Section omitted or not applicable.</i></p>`;
-                // Or simply don't append the unitDiv if you want to hide empty sections.
-                // For now, let's skip adding empty sections to the DOM.
-                return; // Skip appending this unitDiv
+            if (textToRender) {
+                const unitDiv = document.createElement('div');
+                unitDiv.className = `prayer-unit ${cssClass}`;
+                unitDiv.textContent = textToRender; // Use textContent to prevent XSS from data
+                prayerContentArea.appendChild(unitDiv);
+            } else if (!sectionName) { // Avoid empty divs if only section name was present
+                // Optionally log missing text for a unit if it's unexpected
+                // console.warn(`No text found for unit_id: ${unitId} with rule: ${displayRule}`);
             }
-            prayerContentArea.appendChild(unitDiv);
         });
     }
 
-    // --- PWA Setup (Conceptual - Service Worker Registration) ---
-    function registerServiceWorker() {
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                    })
-                    .catch(error => {
-                        console.log('ServiceWorker registration failed: ', error);
-                    });
-            });
+
+    // 6. Event Handlers
+    function handlePrayerSelection(event) {
+        selectedPrayerId = event.target.dataset.prayerId;
+        const prayer = PRAYERS.find(p => p.id === selectedPrayerId);
+        if (prayer) {
+            selectedPrayerTitle.textContent = `Select Nusach for ${prayer.name}`;
+            showView('nusach-selection');
         }
     }
 
-    // --- Start the App ---
-    init();
-    registerServiceWorker(); // Call PWA registration
-});
+    function handleStartPrayer() {
+        selectedPersonalNusachId = personalNusachSelect.value;
+        selectedCommunityNusachId = communityNusachSelect.value;
+
+        // Store choices (optional)
+        // localStorage.setItem('personalNusach', selectedPersonalNusachId);
+        // localStorage.setItem('communityNusach', selectedCommunityNusachId);
+
+        renderPrayer();
+        showView('prayer-display');
+    }
+
+    function handleBackToMenu() {
+        if (currentView === 'prayer-display') {
+            showView('nusach-selection');
+        } else if (currentView === 'nusach-selection') {
+            showView('main-menu');
+        }
+        // Optionally clear prayer content or reset selections here
+        prayerContentArea.innerHTML = '';
+    }
+
+    // 7. Event Listener Setup
+    function setupEventListeners() {
+        if (startPrayerBtn) {
+            startPrayerBtn.addEventListener('click', handleStartPrayer);
+        } else {
+            console.error("Start Prayer Button not found!");
+        }
+
+        if (backToMenuBtn) {
+            backToMenuBtn.addEventListener('click', handleBackToMenu);
+        } else {
+            console.error("Back to Menu Button not found!");
+        }
+        // Prayer list buttons have listeners added dynamically in populatePrayerList
+    }
+
+    // 8. Initialization Function (init)
+    function init() {
+        populatePrayerList();
+        populateNusachDropdowns();
+        setupEventListeners();
+        showView('main-menu'); // Start at the main menu
+
+        // Restore last choices (optional)
+        // const savedPersonalNusach = localStorage.getItem('personalNusach');
+        // const savedCommunityNusach = localStorage.getItem('communityNusach');
+        // if (savedPersonalNusach) personalNusachSelect.value = savedPersonalNusach;
+        // if (savedCommunityNusach) communityNusachSelect.value = savedCommunityNusach;
+    }
+
+    // 9. PWA Service Worker Registration
+    function registerServiceWorker() {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(registration => {
+                    console.log('Service Worker registered with scope:', registration.scope);
+                })
+                .catch(error => {
+                    console.error('Service Worker registration failed:', error);
+                });
+        }
+    }
+
+    // Run init when DOM is ready and register Service Worker
+    document.addEventListener('DOMContentLoaded', () => {
+        init();
+        registerServiceWorker();
+    });
+
+})();
