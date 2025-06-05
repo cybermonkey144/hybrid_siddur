@@ -1,0 +1,73 @@
+Originally used Gemini 2.5 Pro
+Okay, here's a concise System Design Document for the "Hybrid Siddur" PWA based on what we've outlined:
+System Design Document: Hybrid Siddur PWA (Conceptual Build)
+
+1. Introduction
+This document describes the system design for the "Hybrid Siddur," a Progressive Web App (PWA). Its primary goal is to offer a digital Jewish prayer book that dynamically renders prayer texts according to a user's selected personal Nusach (custom) and the Nusach of their community. The design emphasizes client-side operation and static hosting for simplicity and maintainability.
+
+2. System Architecture
+The Hybrid Siddur is a client-side PWA with no traditional backend server. All application logic and prayer data are bundled as static assets (HTML, CSS, JavaScript, JSON files). These assets are served by a static file host (e.g., GitHub Pages, Netlify) directly to the user's browser.
+User's Browser (Web App Client): Executes all application logic, renders UI, and manages prayer display.
+Static File Host: Stores and delivers index.html, style.css, script.js, sw.js (Service Worker), and JSON data files.
+
+3. Core Components
+Frontend (User Interface - UI):
+HTML (index.html): Provides the basic structure with distinct views for the main menu, Nusach selection, and prayer display.
+CSS (style.css): Styles the application and includes specific classes for visual differentiation of prayer texts based on Nusach (e.g., personal-only, community-only).
+JavaScript (script.js): Contains all client-side logic, including UI interactions, data loading, Nusach selection handling, and the core prayer rendering engine.
+Data Storage (Static JSON Files):
+Prayer Templates (data/templates/*.json): Define the sequence and display rules for prayer units within each prayer (e.g., shacharit_template.json). Each unit has a unit_id and a display_rule.
+Nusach Content (data/nusachim/*.json): Contain the actual Hebrew/Aramaic prayer texts for each supported Nusach (e.g., ashkenaz.json). Texts are keyed by unit_id.
+Service Worker (sw.js): Enables PWA functionality, primarily caching static assets for offline access.
+
+4. Data Model
+Prayer Template JSON: An array of objects, where each object represents a prayer unit.
+unit_id (String): Unique identifier, links to Nusach content.
+section_name (String, Optional): Human-readable name.
+display_rule (String): Defines rendering logic (e.g., "personal", "community", "hybrid_default_personal").
+Nusach Content JSON: A JSON object where keys are unit_ids and values are the prayer texts for that specific Nusach.
+
+5. Key Functionality
+Dynamic View Management: JavaScript shows/hides HTML sections for different views (menu, Nusach selection, prayer).
+Nusach Selection: Users select their "Personal Nusach" and "Community Nusach" from dropdowns populated from a predefined list in script.js.
+Prayer Navigation: Users select a prayer (e.g., Shacharit, Mincha) from the main menu.
+Dynamic Prayer Text Rendering Engine:
+Fetches the selected prayer's template JSON.
+Fetches the JSON content for the chosen personal and community Nusachim.
+Iterates through the template units.
+For each unit, applies the display_rule to determine which text (personal, community, or a combination/default) to display.
+Applies CSS classes for visual cues (e.g., highlighting texts unique to one Nusach).
+Offline Access: The Service Worker (sw.js) caches essential application files (index.html, style.css, script.js, core data JSONs) to allow the PWA to function without a network connection after the initial load.
+
+6. User Flow (Simplified)
+Launch: User opens the PWA URL. index.html and core assets load. Service Worker installs/activates.
+Main Menu: User selects a prayer (e.g., "Shacharit").
+Nusach Selection: User selects their personal and the community Nusach. Clicks "Start Prayer."
+Prayer Display: The application loads the relevant template and Nusach data, then renders the prayer text according to the defined display_rules.
+Navigation: User can return to the main menu.
+
+7. Technology Stack
+Frontend: HTML5, CSS3, Vanilla JavaScript (ES6+)
+Data Format: JSON
+PWA Features: Service Workers, Web App Manifest (manifest.json)
+Deployment: Static web hosting.
+
+8. Project File Structure (Key Files)
+hybridsiddur-pwa/
+├── index.html
+├── style.css
+├── script.js
+├── sw.js
+├── manifest.json
+├── data/
+│   ├── templates/
+│   │   └── (e.g., shacharit_template.json)
+│   └── nusachim/
+│       └── (e.g., ashkenaz.json)
+└── assets/
+    └── icons/
+        └── (app icons)
+
+
+
+
