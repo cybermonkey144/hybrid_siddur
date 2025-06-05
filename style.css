@@ -1,0 +1,114 @@
+body {
+    font-family: sans-serif; /* Choose appropriate Hebrew and Latin fonts */
+    direction: rtl; /* Default to Right-to-Left for Hebrew, can be adjusted per section */
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+#app-container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background-color: #fff;
+}
+
+/* View Management */
+.view {
+    display: none; /* Hide views by default */
+}
+
+.active-view {
+    display: block; /* Show the active view */
+}
+
+/* Basic Button Styling */
+button {
+    padding: 10px 15px;
+    margin: 5px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #e0e0e0;
+}
+
+/* Nusach Selection Styling */
+#nusach-selection-view div {
+    margin-bottom: 15px;
+}
+
+#nusach-selection-view label {
+    display: inline-block;
+    width: 180px; /* Adjust as needed */
+}
+
+#nusach-selection-view select {
+    padding: 8px;
+    min-width: 150px; /* Adjust as needed */
+}
+
+
+/* Prayer Content Area */
+#prayer-content-area {
+    text-align: right; /* Ensure Hebrew text aligns right */
+    font-size: 1.2em; /* Example, make adjustable */
+    line-height: 1.8;
+}
+
+#prayer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Styling for Hybrid Display Logic */
+.prayer-unit {
+    margin-bottom: 1em;
+    padding: 0.5em;
+    border-right: 3px solid transparent; /* Default border for alignment */
+}
+
+.prayer-unit.personal-text {
+    /* Default styling for personal text when it's the one displayed */
+}
+
+.prayer-unit.community-text {
+    /* Default styling for community text when it's the one displayed */
+}
+
+.prayer-unit.personal-only {
+    border-right-color: blue; /* Example: Blue border for personal-only text */
+    background-color: #e6f2ff; /* Light blue background */
+    /* Add a small label or icon if desired */
+}
+.prayer-unit.personal-only::before {
+    content: "[Personal] "; /* Example label */
+    font-weight: bold;
+    color: blue;
+    font-size: 0.8em;
+}
+
+
+.prayer-unit.community-only {
+    border-right-color: green; /* Example: Green border for community-only text */
+    background-color: #e6ffe6; /* Light green background */
+}
+.prayer-unit.community-only::before {
+    content: "[Community] "; /* Example label */
+    font-weight: bold;
+    color: green;
+    font-size: 0.8em;
+}
+
+
+/* Optional: Styling for section names if displayed */
+.section-name-header {
+    font-size: 0.9em;
+    color: #777;
+    margin-bottom: 0.2em;
+    font-style: italic;
+}

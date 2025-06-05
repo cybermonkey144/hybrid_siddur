@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="he"> <!- Consider Hebrew as primary or allow language switching ->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hybrid Siddur</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff"/> </head>
+<body>
+    <div id="app-container">
+
+        <div id="main-menu-view" class="view active-view">
+            <h1>Select a Prayer</h1>
+            <nav id="prayer-selection-menu">
+                <button data-prayer="shacharit">Shacharit</button>
+                <button data-prayer="mincha">Mincha</button>
+                <button data-prayer="maariv">Maariv</button>
+                </nav>
+        </div>
+
+        <div id="nusach-selection-view" class="view">
+            <h2>Select Nusachim</h2>
+            <div>
+                <label for="personal-nusach-select">Your Personal Nusach:</label>
+                <select id="personal-nusach-select">
+                    </select>
+            </div>
+            <div>
+                <label for="community-nusach-select">Community Nusach:</label>
+                <select id="community-nusach-select">
+                    </select>
+            </div>
+            <button id="start-prayer-button">Start Prayer</button>
+            <button class="back-to-menu-button">Back to Main Menu</button>
+        </div>
+
+        <div id="prayer-display-view" class="view">
+            <div id="prayer-header">
+                <button class="back-to-menu-button">Back to Main Menu</button>
+                <h2 id="current-prayer-title"></h2>
+            </div>
+            <div id="prayer-content-area">
+                </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

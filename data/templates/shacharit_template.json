@@ -1,0 +1,20 @@
+[
+  {
+    "unit_id": "modeh-ani",
+    "section_name": "Modeh Ani",
+    "type": "introductory-blessing",
+    "display_rule": "personal"
+  },
+  {
+    "unit_id": "baruch-sheamar-intro",
+    "section_name": "Baruch She'amar Introduction",
+    "type": "psukei-zimra-part",
+    "display_rule": "hybrid_default_personal"
+  },
+  {
+    "unit_id": "kaddish-shaleim",
+    "section_name": "Kaddish Shaleim",
+    "type": "kaddish",
+    "display_rule": "community"
+  }
+]
