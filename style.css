@@ -1,114 +1,183 @@
 body {
-    font-family: sans-serif; /* Choose appropriate Hebrew and Latin fonts */
-    direction: rtl; /* Default to Right-to-Left for Hebrew, can be adjusted per section */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
     margin: 0;
-    padding: 0;
+    padding: 20px;
     background-color: #f4f4f4;
+    color: #333;
+    direction: rtl; /* Default to RTL for Hebrew, LTR can be set on specific elements */
 }
 
 #app-container {
     max-width: 800px;
     margin: auto;
+    background: #fff;
     padding: 20px;
-    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-/* View Management */
-.view {
-    display: none; /* Hide views by default */
+.hidden {
+    display: none !important;
 }
 
-.active-view {
-    display: block; /* Show the active view */
-}
-
-/* Basic Button Styling */
 button {
+    display: inline-block;
+    background: #0056b3;
+    color: #fff;
     padding: 10px 15px;
-    margin: 5px;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    margin: 5px;
+    font-size: 1em;
 }
 
 button:hover {
-    background-color: #e0e0e0;
+    background: #004494;
 }
 
-/* Nusach Selection Styling */
-#nusach-selection-view div {
-    margin-bottom: 15px;
+select {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    width: calc(100% - 22px); /* Full width minus padding and border */
+    font-size: 1em;
 }
 
-#nusach-selection-view label {
-    display: inline-block;
-    width: 180px; /* Adjust as needed */
+h1, h2 {
+    color: #0056b3;
+    text-align: center;
 }
 
-#nusach-selection-view select {
-    padding: 8px;
-    min-width: 150px; /* Adjust as needed */
-}
-
-
-/* Prayer Content Area */
-#prayer-content-area {
-    text-align: right; /* Ensure Hebrew text aligns right */
-    font-size: 1.2em; /* Example, make adjustable */
-    line-height: 1.8;
+#main-menu-view button {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
 }
 
 #prayer-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 15px;
 }
 
-/* Styling for Hybrid Display Logic */
-.prayer-unit {
-    margin-bottom: 1em;
-    padding: 0.5em;
-    border-right: 3px solid transparent; /* Default border for alignment */
+#prayer-header #prayer-title {
+    margin: 0; /* Reset margin for h2 inside flex */
+    text-align: right;
+    flex-grow: 1;
 }
-
-.prayer-unit.personal-text {
-    /* Default styling for personal text when it's the one displayed */
+#prayer-header #back-to-menu-btn {
+    background: #6c757d;
 }
-
-.prayer-unit.community-text {
-    /* Default styling for community text when it's the one displayed */
-}
-
-.prayer-unit.personal-only {
-    border-right-color: blue; /* Example: Blue border for personal-only text */
-    background-color: #e6f2ff; /* Light blue background */
-    /* Add a small label or icon if desired */
-}
-.prayer-unit.personal-only::before {
-    content: "[Personal] "; /* Example label */
-    font-weight: bold;
-    color: blue;
-    font-size: 0.8em;
+#prayer-header #back-to-menu-btn:hover {
+    background: #5a6268;
 }
 
 
-.prayer-unit.community-only {
-    border-right-color: green; /* Example: Green border for community-only text */
-    background-color: #e6ffe6; /* Light green background */
+#prayer-content {
+    text-align: right; /* For Hebrew text */
+    font-size: 1.2em; /* Larger font for prayer text */
 }
-.prayer-unit.community-only::before {
-    content: "[Community] "; /* Example label */
-    font-weight: bold;
-    color: green;
-    font-size: 0.8em;
+
+.text-segment {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    line-height: 1.8;
+}
+
+.personal-text {
+    /* border-left: 3px solid blue; */
+    /* For RTL, use border-right */
+    border-right: 3px solid dodgerblue;
+}
+
+.community-text {
+    /* border-left: 3px solid green; */
+    border-right: 3px solid mediumseagreen;
+}
+
+.personal-only-text {
+    /* font-style: italic; */
+    background-color: #e6f7ff; /* Light blue */
+}
+
+.community-only-text {
+    /* font-style: italic; */
+    background-color: #e6ffe6; /* Light green */
+}
+
+.common-text {
+    border-right: 3px solid #ccc; /* Neutral gray for common text */
+}
+
+.conflicting-text-block {
+    border: 1px dashed #ccc;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+}
+
+.conflicting-text-personal {
+    background-color: #f0f8ff; /* AliceBlue */
+    padding: 5px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+}
+.conflicting-text-personal strong {
+    color: dodgerblue;
+}
+
+.conflicting-text-community {
+    background-color: #f0fff0; /* Honeydew */
+    padding: 5px;
+    border-radius: 3px;
+}
+.conflicting-text-community strong {
+    color: mediumseagreen;
 }
 
 
-/* Optional: Styling for section names if displayed */
-.section-name-header {
-    font-size: 0.9em;
-    color: #777;
-    margin-bottom: 0.2em;
-    font-style: italic;
+.community-as-default-text {
+    background-color: #f0fff0; /* Light green tint */
+}
+.personal-as-default-text {
+    background-color: #f0f8ff; /* Light blue tint */
+}
+
+
+#loading-indicator {
+    text-align: center;
+    padding: 20px;
+    font-size: 1.2em;
+    color: #0056b3;
+}
+
+.error-message {
+    background-color: #ffdddd;
+    color: #d8000c;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #d8000c;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* Specific for LTR content if any, or for UI elements */
+[dir="ltr"] {
+    direction: ltr;
+    text-align: left;
+}
+label, #nusach-selection-view h2 { /* Keep labels LTR for readability if app UI is mixed */
+    direction: ltr;
+    text-align: left;
+}
+#prayer-title {
+    direction: rtl; /* Ensure title is RTL if it contains hebrew */
+    text-align: center;
 }

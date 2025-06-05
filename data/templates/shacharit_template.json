@@ -1,20 +1,57 @@
 [
-  {
-    "unit_id": "modeh-ani",
-    "section_name": "Modeh Ani",
-    "type": "introductory-blessing",
-    "display_rule": "personal"
-  },
-  {
-    "unit_id": "baruch-sheamar-intro",
-    "section_name": "Baruch She'amar Introduction",
-    "type": "psukei-zimra-part",
-    "display_rule": "hybrid_default_personal"
-  },
-  {
-    "unit_id": "kaddish-shaleim",
-    "section_name": "Kaddish Shaleim",
-    "type": "kaddish",
-    "display_rule": "community"
-  }
+    {
+        "unit_id": "modeh_ani",
+        "section_name": "Modeh Ani",
+        "display_rule": "hybrid_default_personal",
+        "notes": "Opening declaration"
+    },
+    {
+        "unit_id": "birchot_hashachar_general",
+        "section_name": "Birchot HaShachar - General",
+        "display_rule": "hybrid_default_personal"
+    },
+    {
+        "unit_id": "birchot_hashachar_elokai_neshama",
+        "section_name": "Birchot HaShachar - Elokai Neshama",
+        "display_rule": "always_personal",
+        "notes": "Often said individually"
+    },
+    {
+        "unit_id": "korbanot_parashat_hatamid",
+        "section_name": "Korbanot - Parashat HaTamid",
+        "display_rule": "hybrid_default_community"
+    },
+    {
+        "unit_id": "psukei_dzimra_baruch_sheamar",
+        "section_name": "Psukei D'Zimra - Baruch She'amar",
+        "display_rule": "show_both_highlight_differences",
+        "notes": "Key introductory blessing for Psukei D'Zimra. Variations exist."
+    },
+    {
+        "unit_id": "psukei_dzimra_ashrei",
+        "section_name": "Psukei D'Zimra - Ashrei",
+        "display_rule": "hybrid_default_community"
+    },
+    {
+        "unit_id": "shema_full",
+        "section_name": "Kriat Shema - Full",
+        "display_rule": "hybrid_default_community",
+        "notes": "Includes blessings before and after Shema itself"
+    },
+    {
+        "unit_id": "amidah_shacharit",
+        "section_name": "Amidah - Shacharit",
+        "display_rule": "personal_only",
+        "notes": "The silent Amidah is personal. Repetition (Chazarat HaShatz) would be community."
+    },
+    {
+        "unit_id": "tachanun_shacharit",
+        "section_name": "Tachanun - Shacharit",
+        "display_rule": "show_both_highlight_differences"
+    },
+    {
+        "unit_id": "aleinu",
+        "section_name": "Aleinu",
+        "display_rule": "hybrid_default_community"
+    }
 ]

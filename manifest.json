@@ -1,16 +1,23 @@
 {
     "name": "Hybrid Siddur",
     "short_name": "Siddur",
-    "description": "A dynamic digital prayer book.",
-    "start_url": "/",
+    "description": "A dynamic digital prayer book supporting personal and community Nusachim.",
+    "start_url": "/index.html",
     "display": "standalone",
     "background_color": "#ffffff",
-    "theme_color": "#003366",
+    "theme_color": "#0056b3",
+    "orientation": "portrait-primary",
     "icons": [
+        {
+            "src": "assets/icons/icon-72x72.png",
+            "sizes": "72x72",
+            "type": "image/png"
+        },
         {
             "src": "assets/icons/icon-192x192.png",
             "sizes": "192x192",
-            "type": "image/png"
+            "type": "image/png",
+            "purpose": "any maskable"
         },
         {
             "src": "assets/icons/icon-512x512.png",

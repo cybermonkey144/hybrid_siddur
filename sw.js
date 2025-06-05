@@ -1,112 +1,107 @@
-const CACHE_NAME = 'hybrid-siddur-cache-v1';
-const urlsToCache = [
+const CACHE_NAME = 'hybrid-siddur-cache-v1.1'; // Increment version for updates
+const FILES_TO_PRECACHE = [
     '/',
-    '/index.html',
-    '/style.css',
-    '/script.js',
-    '/manifest.json',
-    // Add paths to your core templates and Nusachim that you want to pre-cache
-    // For a larger number of files, you might fetch these dynamically or have a build step generate this list.
-    '/data/templates/shacharit_template.json',
-    // '/data/templates/mincha_template.json',
-    // '/data/templates/maariv_template.json',
-    '/data/nusachim/ashkenaz.json',
-    '/data/nusachim/sefard.json',
-    // Add paths to icons if not pre-cached by manifest
-    '/assets/icons/icon-192x192.png',
-    // '/assets/icons/icon-512x512.png'
+    'index.html',
+    'style.css',
+    'manifest.json',
+    'js/main.js',
+    'js/uiManager.js',
+    'js/dataLoader.js',
+    'js/prayerEngine.js',
+    'js/stateManager.js',
+    'js/config.js',
+    'assets/icons/icon-192x192.png',
+    'assets/icons/icon-512x512.png',
+    'assets/icons/icon-72x72.png',
+    // Consider pre-caching a few essential prayer templates/nusachim if small enough
+    // e.g. 'data/templates/shacharit_template.json', 'data/nusachim/ashkenaz.json'
 ];
 
 self.addEventListener('install', event => {
+    console.log('[ServiceWorker] Install');
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
-                console.log('Opened cache');
-                return cache.addAll(urlsToCache);
+                console.log('[ServiceWorker] Pre-caching offline page');
+                return cache.addAll(FILES_TO_PRECACHE);
             })
+            .then(() => self.skipWaiting()) // Activate new SW immediately
     );
 });
-// ... inside sw.js ...
-self.addEventListener('fetch', event => {
-    event.respondWith(
-        caches.match(event.request)
-            .then(response => {
-                // Cache hit - return response
-                if (response) {
-                    // console.log(`[Service Worker] Serving from cache: ${event.request.url}`);
-                    return response;
-                }
-
-                // Not in cache - try to fetch from network
-                // console.log(`[Service Worker] Not in cache, fetching: ${event.request.url}`);
-                return fetch(event.request).then(
-                    networkResponse => {
-                        // Optional: Cache dynamically fetched resources if needed
-                        // For this app, primary assets are pre-cached, so this part is less critical
-                        // but can be useful for assets not in urlsToCache initially.
-                        // console.log(`[Service Worker] Fetched from network: ${event.request.url}`);
-                        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
-                            const responseToCache = networkResponse.clone();
-                            caches.open(CACHE_NAME)
-                                .then(cache => {
-                                    cache.put(event.request, responseToCache);
-                                });
-                        }
-                        return networkResponse;
-                    }
-                ).catch(error => {
-                    // THIS IS LIKELY THE KEY AREA FOR OFFLINE PAGE LOADING
-                    console.error(`[Service Worker] Fetch failed for: ${event.request.url}`, error);
-                    // **If this was a navigation request (for an HTML page),
-                    // **you need to return a fallback HTML response here.**
-                    // **Currently, it just logs and doesn't return a Response,
-                    // **so the browser shows its default offline page.
-
-                    // For navigation requests, try to return the cached root page.
-                    
-                    if (event.request.mode === 'navigate') {
-                        console.log('[Service Worker] Navigation fetch failed. Serving /index.html from cache.');
-                        // Try to serve the main app shell.
-                        // Ensure '/' or '/index.html' is definitely in your urlsToCache.
-                        return caches.match('/') || caches.match('/index.html');
-                    }
-
-                    // For other types of requests (images, data files etc.),
-                    // if they are not critical for the page shell to load,
-                    // allowing them to fail might be acceptable, or you could
-                    // return a generic placeholder if needed.
-                    // For this app, core data is pre-cached. If a non-cached data file is requested offline,
-                    // the app's JS should handle the resulting error.
-                    // This empty return will result in a network error for non-navigation requests.
-                });
-            })
-            .catch(error => {
-                console.error("[Service Worker] Error in caches.match or network fetch: ", error);
-                // As a last resort for navigation, if even caches.match failed initially.
-                if (event.request.mode === 'navigate') {
-                    return caches.match('/') || caches.match('/index.html');
-                }
-            })
-    );
-});
-// Cache-First for data/ (JSON files) might be a good strategy
-// You might want a more sophisticated caching strategy, e.g., "Stale-While-Revalidate" for data.
-// Or network-first for data if updates are frequent and critical.
-// The current fetch event handler is a basic "Cache falling back to Network, then cache" strategy.
 
 self.addEventListener('activate', event => {
-    const cacheWhitelist = [CACHE_NAME];
+    console.log('[ServiceWorker] Activate');
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
                 cacheNames.map(cacheName => {
-                    if (cacheWhitelist.indexOf(cacheName) === -1) {
+                    if (cacheName !== CACHE_NAME) {
+                        console.log('[ServiceWorker] Clearing old cache:', cacheName);
                         return caches.delete(cacheName);
                     }
                 })
             );
-        })
+        }).then(() => self.clients.claim()) // Take control of open clients
     );
-    console.log('[Service Worker] Activating and claiming clients.');
-    return self.clients.claim(); // Add this line
+});
+
+self.addEventListener('fetch', event => {
+    const requestUrl = new URL(event.request.url);
+
+    // Strategy:
+    // - For /data/ (JSON prayer files): Network first, then cache.
+    //   This allows updates to prayer texts to be fetched when online.
+    // - For all other assets (app shell): Cache first, then network.
+    //   This ensures the app loads fast and works offline.
+
+    if (requestUrl.pathname.startsWith('/data/')) {
+        event.respondWith(
+            fetch(event.request)
+                .then(networkResponse => {
+                    if (networkResponse && networkResponse.status === 200) {
+                        const responseToCache = networkResponse.clone();
+                        caches.open(CACHE_NAME).then(cache => {
+                            cache.put(event.request, responseToCache);
+                        });
+                    }
+                    return networkResponse;
+                })
+                .catch(() => {
+                    // Network failed, try to serve from cache
+                    return caches.match(event.request)
+                        .then(cachedResponse => {
+                            return cachedResponse || new Response(null, { status: 404, statusText: "Offline and not in cache" });
+                        });
+                })
+        );
+    } else { // Static assets (app shell)
+        event.respondWith(
+            caches.match(event.request)
+                .then(cachedResponse => {
+                    // Return cached response if found, otherwise fetch from network
+                    if (cachedResponse) {
+                        return cachedResponse;
+                    }
+                    return fetch(event.request).then(networkResponse => {
+                        // Optionally cache newly fetched static assets not in FILES_TO_PRECACHE
+                        // Be cautious with this for assets that might change frequently and are not part of the core app shell
+                        if (networkResponse && networkResponse.status === 200 && !FILES_TO_PRECACHE.includes(requestUrl.pathname)) {
+                            // Example: Caching images on the fly
+                            // if (/\.(png|jpg|jpeg|svg|gif)$/.test(requestUrl.pathname)) {
+                            //   const responseToCache = networkResponse.clone();
+                            //   caches.open(CACHE_NAME).then(cache => {
+                            //     cache.put(event.request, responseToCache);
+                            //   });
+                            // }
+                        }
+                        return networkResponse;
+                    }).catch(error => {
+                        console.error('[ServiceWorker] Fetch failed for static asset:', event.request.url, error);
+                        // You could return a generic offline page here for navigation requests if appropriate
+                        // For other assets, it might just fail if not in cache.
+                        // For this setup, if a pre-cached file isn't found & network fails, it will error.
+                    });
+                })
+        );
+    }
 });

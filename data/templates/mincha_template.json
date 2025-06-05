@@ -1,0 +1,46 @@
+[
+    {
+        "unit_id": "korbanot_mincha_optional",
+        "section_name": "Korbanot for Mincha (Optional)",
+        "display_rule": "hybrid_default_personal",
+        "notes": "Often includes Parashat HaKetoret"
+    },
+    { 
+        "unit_id": "amida_1",
+        "section_name": "Amidah - Mincha",
+        "display_rule": "personal_only",
+        "notes": "The silent Amidah for Mincha."
+    },
+    {
+        "unit_id": "amida_kedusha",
+        "section_name": "Amidah - Mincha",
+        "display_rule": "show_both_highlight_differences",
+        "notes": "Kedusha."
+    },
+    {
+        "unit_id": "amida_2",
+        "section_name": "Amidah - Mincha",
+        "display_rule": "hybrid_default_personal",
+        "notes": "The silent Amidah for Mincha."
+    },
+    {
+        "unit_id": "13_middos",
+        "section_name": "Tachanun - Mincha",
+        "display_rule": "hybrid_default_community"
+    },
+    {
+        "unit_id": "tachanun",
+        "section_name": "Tachanun - Mincha",
+        "display_rule": "hybrid_default_personal"
+    },
+    {
+        "unit_id": "kadish_titkabel",
+        "section_name": "Kadish Titkabel",
+        "display_rule": "hybrid_default_community"
+    },
+    {
+        "unit_id": "aleinu_mincha",
+        "section_name": "Aleinu (Mincha)",
+        "display_rule": "hybrid_default_personal"
+    }
+]
