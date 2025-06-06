@@ -1,46 +1,86 @@
 [
     {
-        "unit_id": "korbanot_mincha_optional",
-        "section_name": "Korbanot for Mincha (Optional)",
-        "display_rule": "hybrid_default_personal",
-        "notes": "Often includes Parashat HaKetoret"
-    },
-    { 
-        "unit_id": "amida_1",
-        "section_name": "Amidah - Mincha",
-        "display_rule": "personal_only",
-        "notes": "The silent Amidah for Mincha."
+      "unit_id": "mincha_korbanot",
+      "section_name": "Korbanot - Sacrificial Readings (Optional for Mincha)",
+      "display_rule": "personal_only",
+      "notes": "Recited quietly by individuals if included. Many congregations begin directly with Ashrei. More common in some Sephardic/Chabad customs for Mincha."
     },
     {
-        "unit_id": "amida_kedusha",
-        "section_name": "Amidah - Mincha",
-        "display_rule": "show_both_highlight_differences",
-        "notes": "Kedusha."
+      "unit_id": "mincha_ashrei",
+      "section_name": "Ashrei (Psalm 145 and introductory verses)",
+      "display_rule": "hybrid_default_personal",
+      "notes": "Congregation typically recites together in an undertone."
     },
     {
-        "unit_id": "amida_2",
-        "section_name": "Amidah - Mincha",
-        "display_rule": "hybrid_default_personal",
-        "notes": "The silent Amidah for Mincha."
+      "unit_id": "mincha_chatzi_kaddish_after_ashrei",
+      "section_name": "Chatzi Kaddish (Half Kaddish after Ashrei)",
+      "display_rule": "show_both_highlight_differences",
+      "notes": "Chazzan recites aloud, congregation responds aloud at specific points ('Amen, Yehei Shmei Rabbah...'). Requires a Minyan (quorum of 10)."
     },
     {
-        "unit_id": "13_middos",
-        "section_name": "Tachanun - Mincha",
-        "display_rule": "hybrid_default_community"
+      "unit_id": "mincha_amidah_silent",
+      "section_name": "Silent Amidah (Shemoneh Esrei)",
+      "display_rule": "personal_only",
+      "notes": "The core standing prayer, recited silently by each individual while facing Jerusalem."
     },
     {
-        "unit_id": "tachanun",
-        "section_name": "Tachanun - Mincha",
-        "display_rule": "hybrid_default_personal"
+      "unit_id": "mincha_chazarat_hashatz_intro_blessings",
+      "section_name": "Chazzan's Repetition: Introductory Blessings (Avot, Gevurot)",
+      "display_rule": "show_both_highlight_differences",
+      "notes": "Chazzan repeats the first two blessings of the Amidah aloud. Congregation responds 'Amen' after each blessing. Requires a Minyan."
     },
     {
-        "unit_id": "kadish_titkabel",
-        "section_name": "Kadish Titkabel",
-        "display_rule": "hybrid_default_community"
+      "unit_id": "mincha_kedusha",
+      "section_name": "Kedusha (Holiness - during Chazzan's Repetition)",
+      "display_rule": "show_both_highlight_differences",
+      "notes": "Recited during the Chazzan's repetition of the third Amidah blessing. Chazzan and congregation recite specific verses aloud responsively."
     },
     {
-        "unit_id": "aleinu_mincha",
-        "section_name": "Aleinu (Mincha)",
-        "display_rule": "hybrid_default_personal"
+      "unit_id": "mincha_chazarat_hashatz_remaining_blessings_pre_modim",
+      "section_name": "Chazzan's Repetition: Blessings after Kedusha up to Modim",
+      "display_rule": "show_both_highlight_differences",
+      "notes": "Chazzan continues reciting the Amidah blessings aloud. Congregation responds 'Amen' after each blessing."
+    },
+    {
+      "unit_id": "mincha_chazarat_hashatz_modim_blessing",
+      "section_name": "Chazzan's Repetition: Modim Blessing (Thanksgiving)",
+      "display_rule": "show_both_highlight_differences",
+      "notes": "Chazzan recites the Modim blessing aloud. Congregation bows and responds 'Amen' at the end of the blessing. (See Modim D'Rabbanan for congregation's silent prayer)."
+    },
+    {
+      "unit_id": "mincha_modim_derabbanan",
+      "section_name": "Modim D'Rabbanan (Congregation's Thanksgiving)",
+      "display_rule": "hybrid_default_personal",
+      "notes": "Recited quietly by the congregation while the Chazzan recites the 'Modim' blessing aloud during the repetition."
+    },
+    {
+      "unit_id": "mincha_birkat_kohanim",
+      "section_name": "Birkat Kohanim (Priestly Blessing during Repetition)",
+      "display_rule": "show_both_highlight_differences",
+      "notes": "If Kohanim (priests) are present, they bless the congregation aloud, prompted by the Chazzan. Congregation responds 'Amen' to each verse. If no Kohanim, Chazzan recites a substitute prayer aloud, to which congregation responds 'Amen'. Not typically performed at weekday Mincha in many Ashkenazi Diaspora communities, but common in Israel and on certain occasions/some customs."
+    },
+    {
+      "unit_id": "mincha_chazarat_hashatz_final_blessings",
+      "section_name": "Chazzan's Repetition: Final Blessings (e.g., Sim Shalom)",
+      "display_rule": "show_both_highlight_differences",
+      "notes": "Chazzan concludes the Amidah repetition with the final blessings aloud. Congregation responds 'Amen' after each blessing."
+    },
+    {
+      "unit_id": "mincha_tachanun",
+      "section_name": "Tachanun (Supplications)",
+      "display_rule": "show_both_highlight_differences",
+      "notes": "Penitential prayers. Recitation style varies: some parts are said quietly by individuals, other parts (especially the 'Thirteen Attributes of Mercy' on Mondays and Thursdays) are led by the Chazzan and recited responsively. Individuals lean (Ashkenazi custom) during parts of Tachanun. Omitted on Shabbat, Festivals, and other joyous occasions."
+    },
+    {
+      "unit_id": "mincha_aleinu",
+      "section_name": "Aleinu (Adoration)",
+      "display_rule": "hybrid_default_personal",
+      "notes": "Congregation recites together, generally in an undertone. It is customary to bow during 'V'anachnu kor'im...'. The Chazzan may begin the first few words aloud in some customs."
+    },
+    {
+      "unit_id": "mincha_kaddish_yatom",
+      "section_name": "Kaddish Yatom (Mourner's Kaddish)",
+      "display_rule": "show_both_highlight_differences",
+      "notes": "Recited aloud by those in mourning, with congregational responses aloud at specific points. If no mourners are present, the Chazzan or another individual may recite a Kaddish (e.g., Kaddish D'Rabbanan) depending on custom."
     }
-]
+  ]

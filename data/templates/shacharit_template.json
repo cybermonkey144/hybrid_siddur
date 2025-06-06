@@ -1,57 +1,116 @@
 [
-    {
-        "unit_id": "modeh_ani",
-        "section_name": "Modeh Ani",
-        "display_rule": "hybrid_default_personal",
-        "notes": "Opening declaration"
-    },
-    {
-        "unit_id": "birchot_hashachar_general",
-        "section_name": "Birchot HaShachar - General",
-        "display_rule": "hybrid_default_personal"
-    },
-    {
-        "unit_id": "birchot_hashachar_elokai_neshama",
-        "section_name": "Birchot HaShachar - Elokai Neshama",
-        "display_rule": "always_personal",
-        "notes": "Often said individually"
-    },
-    {
-        "unit_id": "korbanot_parashat_hatamid",
-        "section_name": "Korbanot - Parashat HaTamid",
-        "display_rule": "hybrid_default_community"
-    },
-    {
-        "unit_id": "psukei_dzimra_baruch_sheamar",
-        "section_name": "Psukei D'Zimra - Baruch She'amar",
-        "display_rule": "show_both_highlight_differences",
-        "notes": "Key introductory blessing for Psukei D'Zimra. Variations exist."
-    },
-    {
-        "unit_id": "psukei_dzimra_ashrei",
-        "section_name": "Psukei D'Zimra - Ashrei",
-        "display_rule": "hybrid_default_community"
-    },
-    {
-        "unit_id": "shema_full",
-        "section_name": "Kriat Shema - Full",
-        "display_rule": "hybrid_default_community",
-        "notes": "Includes blessings before and after Shema itself"
-    },
-    {
-        "unit_id": "amidah_shacharit",
-        "section_name": "Amidah - Shacharit",
-        "display_rule": "personal_only",
-        "notes": "The silent Amidah is personal. Repetition (Chazarat HaShatz) would be community."
-    },
-    {
-        "unit_id": "tachanun_shacharit",
-        "section_name": "Tachanun - Shacharit",
-        "display_rule": "show_both_highlight_differences"
-    },
-    {
-        "unit_id": "aleinu",
-        "section_name": "Aleinu",
-        "display_rule": "hybrid_default_community"
-    }
+  {
+      "unit_id": "shacharit_morning_blessings",
+      "section_name": "Birchot HaShachar (Morning Blessings & Readings)",
+      "display_rule": "personal_only",
+      "notes": "A series of personal blessings and readings recited quietly upon waking or upon arrival at the synagogue. Includes blessings for daily functions, Torah study, and passages on the Binding of Isaac (Akeidah) and Temple offerings (Korbanot)."
+  },
+  {
+      "unit_id": "shacharit_pesukei_dezimra",
+      "section_name": "Pesukei D'Zimra - Psalms of Praise",
+      "display_rule": "hybrid_default_personal",
+      "notes": "The core of this section, including Ashrei (Psalm 145) and Psalms 146-150 (Hallel), recited quietly by the congregation together."
+  },
+  {
+      "unit_id": "shacharit_barechu",
+      "section_name": "Barechu (The Call to Prayer)",
+      "display_rule": "show_both_highlight_differences",
+      "notes": "The Chazzan chants the official call to prayer, and the congregation responds aloud."
+  },
+  {
+      "unit_id": "shacharit_shema_blessings_pre",
+      "section_name": "Blessings before the Shema",
+      "display_rule": "hybrid_default_personal",
+      "notes": "Two blessings, Yotzer Or and Ahavah Rabbah, recited aloud. The congregation recites along with the Chazzan and responds 'Amen'."
+  },
+  {
+      "unit_id": "shacharit_shema",
+      "section_name": "Shema Yisrael",
+      "display_rule": "hybrid_default_personal",
+      "notes": "The central declaration of faith, recited aloud and in unison by the congregation."
+  },
+  {
+      "unit_id": "shacharit_shema_blessing_post",
+      "section_name": "Blessing after the Shema",
+      "display_rule": "hybrid_default_personal",
+      "notes": "The 'Emet V'Yatziv' blessing, affirming the truth of the Shema and redemption, is recited aloud together, leading into the Amidah."
+  },
+  {
+      "unit_id": "shacharit_amidah_silent",
+      "section_name": "Silent Amidah (Shemoneh Esrei)",
+      "display_rule": "personal_only",
+      "notes": "The core standing prayer, recited silently by each individual while facing Jerusalem."
+  },
+  {
+      "unit_id": "shacharit_chazarat_hashatz",
+      "section_name": "Chazarat HaShatz (Chazzan's Repetition of the Amidah)",
+      "display_rule": "show_both_highlight_differences",
+      "notes": "The Chazzan repeats the Amidah aloud. The congregation responds 'Amen' after each blessing. This section only occurs if a Minyan is present."
+  },
+  {
+      "unit_id": "shacharit_kedusha",
+      "section_name": "Kedusha (Holiness)",
+      "display_rule": "show_both_highlight_differences",
+      "notes": "A responsive prayer proclaiming God's holiness, inserted into the Chazzan's repetition of the third blessing of the Amidah."
+  },
+  {
+      "unit_id": "shacharit_modim_derabbanan",
+      "section_name": "Modim D'Rabbanan (Congregation's Thanksgiving)",
+      "display_rule": "hybrid_default_personal",
+      "notes": "A silent prayer of thanks recited by the congregation while the Chazzan recites the 'Modim' blessing aloud during his repetition."
+  },
+  {
+      "unit_id": "shacharit_birkat_kohanim",
+      "section_name": "Birkat Kohanim (Priestly Blessing)",
+      "display_rule": "show_both_highlight_differences",
+      "notes": "During the repetition, Kohanim (priests) bless the congregation aloud. If none are present, the Chazzan recites a substitute. Congregation responds 'Amen'."
+  },
+  {
+      "unit_id": "shacharit_tachanun",
+      "section_name": "Tachanun (Supplications)",
+      "display_rule": "show_both_highlight_differences",
+      "notes": "Penitential prayers. Includes quiet, personal sections and, on Mondays and Thursdays, Chazzan-led responsive verses. Omitted on joyous days."
+  },
+  {
+      "unit_id": "shacharit_hallel",
+      "section_name": "Hallel (Psalms of Praise)",
+      "display_rule": "hybrid_default_community",
+      "notes": "Recited on festivals and Rosh Chodesh (the new month). A collection of Psalms (113-118) recited aloud by the congregation, often led by the Chazzan. Omitted on regular weekdays."
+  },
+  {
+      "unit_id": "shacharit_torah_service",
+      "section_name": "Torah Reading Service",
+      "display_rule": "show_both_highlight_differences",
+      "notes": "On Mondays, Thursdays, and other special days, the Torah is read. This is a public service involving blessings recited aloud by those called up and a public chanting of the text. This unit represents the entire service."
+  },
+  {
+      "unit_id": "shacharit_concluding_prayers",
+      "section_name": "Concluding Prayers (Ashrei, Uva L'Tzion)",
+      "display_rule": "show_both_highlight_differences",
+      "notes": "A collection of concluding verses. Includes Ashrei (said quietly) and Uva L'Tzion, which contains the responsive 'Kedusha D'Sidra'."
+  },
+  {
+      "unit_id": "shacharit_kaddish_shalem",
+      "section_name": "Kaddish Shalem (Full Kaddish)",
+      "display_rule": "show_both_highlight_differences",
+      "notes": "The Chazzan recites the Full Kaddish to formally conclude the main body of the service, with congregational responses."
+  },
+  {
+      "unit_id": "shacharit_aleinu",
+      "section_name": "Aleinu (Adoration)",
+      "display_rule": "hybrid_default_personal",
+      "notes": "A prayer of adoration recited by the congregation together, usually in a quiet but firm voice. It is customary to bow."
+  },
+  {
+      "unit_id": "shacharit_shir_shel_yom",
+      "section_name": "Shir Shel Yom (Psalm of the Day)",
+      "display_rule": "hybrid_default_community",
+      "notes": "The psalm designated for the specific day of the week is recited aloud."
+  },
+  {
+      "unit_id": "shacharit_kaddish_yatom",
+      "section_name": "Kaddish Yatom (Mourner's Kaddish)",
+      "display_rule": "show_both_highlight_differences",
+      "notes": "Recited aloud by those in mourning, with the congregation responding aloud at the appropriate points."
+  }
 ]

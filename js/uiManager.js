@@ -27,6 +27,20 @@ const uiManager = {
         this.personalNusachSelect.innerHTML = ''; // Clear existing options
         this.communityNusachSelect.innerHTML = ''; // Clear existing options
 
+        // Update labels with selected nusach names
+        const personalNusach = nusachimList.find(n => n.id === selectedPersonal);
+        const communityNusach = nusachimList.find(n => n.id === selectedCommunity);
+        
+        const personalLabel = document.querySelector('label[for="personal-nusach-select"]');
+        const communityLabel = document.querySelector('label[for="community-nusach-select"]');
+        
+        if (personalLabel && personalNusach) {
+            personalLabel.textContent = personalNusach.name + ':';
+        }
+        if (communityLabel && communityNusach) {
+            communityLabel.textContent = communityNusach.name + ':';
+        }
+
         nusachimList.forEach(nusach => {
             const optionPersonal = document.createElement('option');
             optionPersonal.value = nusach.id;
@@ -39,6 +53,21 @@ const uiManager = {
             optionCommunity.textContent = nusach.name;
             if (nusach.id === selectedCommunity) optionCommunity.selected = true;
             this.communityNusachSelect.appendChild(optionCommunity);
+        });
+
+        // Add event listeners to update labels when selection changes
+        this.personalNusachSelect.addEventListener('change', (e) => {
+            const selectedNusach = nusachimList.find(n => n.id === e.target.value);
+            if (personalLabel && selectedNusach) {
+                personalLabel.textContent = selectedNusach.name + ':';
+            }
+        });
+
+        this.communityNusachSelect.addEventListener('change', (e) => {
+            const selectedNusach = nusachimList.find(n => n.id === e.target.value);
+            if (communityLabel && selectedNusach) {
+                communityLabel.textContent = selectedNusach.name + ':';
+            }
         });
     },
 
