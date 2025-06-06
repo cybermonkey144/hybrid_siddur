@@ -2,7 +2,7 @@
     "name": "Hybrid Siddur",
     "short_name": "Siddur",
     "description": "A dynamic digital prayer book supporting personal and community Nusachim.",
-    "start_url": "/index.html",
+    "start_url": "hybrid_siddur/index.html",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#0056b3",
